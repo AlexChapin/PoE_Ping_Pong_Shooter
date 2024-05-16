@@ -18,25 +18,39 @@ const int QuadCountsPerSetpointStep = 7.5;
 // Motor Driving Loop //
 task PivotControl(){
 	TargetPose = SetpointSelector * QuadCountsPerSetpointStep;
-	if ((SensorValue(PivotEncoder) - TargetPose)>4){startMotor(Pivot,25);}
-	if ((SensorValue(PivotEncoder) - TargetPose)<-4){startMotor(Pivot,-18);}
-	if ((SensorValue(PivotEncoder) - TargetPose)>.5 &&(SensorValue(PivotEncoder) - TargetPose)<4){startMotor(Pivot,10);}
-	if ((SensorValue(PivotEncoder) - TargetPose)<-.5 &&(SensorValue(PivotEncoder) - TargetPose)>-4){startMotor(Pivot,-7);}
-	if (SensorValue(PivotEncoder)- TargetPose<.5 && SensorValue(PivotEncoder) - TargetPose>-.5){stopMotor(Pivot);}
+	if ((SensorValue(PivotEncoder) - TargetPose)>4){
+		startMotor(Pivot,25);
+		}
+	if ((SensorValue(PivotEncoder) - TargetPose)<-4){
+		startMotor(Pivot,-18);
+		}
+	if ((SensorValue(PivotEncoder) - TargetPose)>.5 &&(SensorValue(PivotEncoder) - TargetPose)<4){
+		startMotor(Pivot,10);
+		}
+	if ((SensorValue(PivotEncoder) - TargetPose)<-.5 &&(SensorValue(PivotEncoder) - TargetPose)>-4){
+		startMotor(Pivot,-7);
+		}
+	if (SensorValue(PivotEncoder) - TargetPose<.5 && SensorValue(PivotEncoder) - TargetPose>-.5){
+		stopMotor(Pivot);
+		}
 }
 
 // Setpoint Adjustment Logic // 
 task PositionLogic(){
 	if(SensorValue(Up)){
 		if(SetpointSelector<=7){
-			SetpointSelector++;}
+			SetpointSelector++;
+			}
 		while (SensorValue(Up)){
-			wait(.01);}}
+			wait(.01);}
+			}
 	if(SensorValue(Down)){
 		if(SetpointSelector>=2){
-			SetpointSelector++;}
+			SetpointSelector++;
+			}
 		while (SensorValue(Down)){
-			wait(.01);}}
+			wait(.01);}
+			}
 }
 
 task ShootControl(){
@@ -51,7 +65,9 @@ task ShootControl(){
 			SensorValue(FlywheelEncoder) = lastquad;
 		}
 
-		if(SensorValue(ShootTrigger)==0){stopMotor(RightFly);}
+		if(SensorValue(ShootTrigger)==0){
+			stopMotor(RightFly);
+			}
 
 	}
 }
