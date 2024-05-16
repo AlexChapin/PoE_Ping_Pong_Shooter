@@ -18,23 +18,36 @@ if ((SensorValue(PivotEncoder) - TargetPose)<-.5 &&(SensorValue(PivotEncoder) - 
 if (SensorValue(PivotEncoder)- TargetPose<.5 && SensorValue(PivotEncoder) - TargetPose>-.5){stopMotor(Pivot);}
 }
 
-task main() {
-	startTask(MotorControl);
-while (true){
 
-
-
-if(SensorValue(Up)){
+task PositionLogic(){
+	if(SensorValue(Up)){
 	if(SetpointSelector<=7){
 		SetpointSelector = SetpointSelector +1;}
 while (SensorValue(Up)){
 wait(.01);}}
-
 if(SensorValue(Down)){
 	if(SetpointSelector>=2){
 		SetpointSelector = SetpointSelector -1;}
 while (SensorValue(Down)){
 wait(.01);}}
+	}
+
+
+
+
+
+
+
+
+
+
+task main() {
+startTask(MotorControl);
+startTask(PositionLogic);
+while (true){
+
+
+
 
 }
 }
