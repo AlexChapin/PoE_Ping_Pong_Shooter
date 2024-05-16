@@ -16,27 +16,27 @@ const int QuadCountsPerSetpointStep = 7.5;
 
 
 task MotorControl(){
-TargetPose = SetpointSelector * QuadCountsPerSetpointStep;
-if ((SensorValue(PivotEncoder) - TargetPose)>4){startMotor(Pivot,25);}
-if ((SensorValue(PivotEncoder) - TargetPose)<-4){startMotor(Pivot,-18);}
-if ((SensorValue(PivotEncoder) - TargetPose)>.5 &&(SensorValue(PivotEncoder) - TargetPose)<4){startMotor(Pivot,10);}
-if ((SensorValue(PivotEncoder) - TargetPose)<-.5 &&(SensorValue(PivotEncoder) - TargetPose)>-4){startMotor(Pivot,-7);}
-if (SensorValue(PivotEncoder)- TargetPose<.5 && SensorValue(PivotEncoder) - TargetPose>-.5){stopMotor(Pivot);}
+	TargetPose = SetpointSelector * QuadCountsPerSetpointStep;
+	if ((SensorValue(PivotEncoder) - TargetPose)>4){startMotor(Pivot,25);}
+	if ((SensorValue(PivotEncoder) - TargetPose)<-4){startMotor(Pivot,-18);}
+	if ((SensorValue(PivotEncoder) - TargetPose)>.5 &&(SensorValue(PivotEncoder) - TargetPose)<4){startMotor(Pivot,10);}
+	if ((SensorValue(PivotEncoder) - TargetPose)<-.5 &&(SensorValue(PivotEncoder) - TargetPose)>-4){startMotor(Pivot,-7);}
+	if (SensorValue(PivotEncoder)- TargetPose<.5 && SensorValue(PivotEncoder) - TargetPose>-.5){stopMotor(Pivot);}
 }
 
 
 task PositionLogic(){
 	if(SensorValue(Up)){
-	if(SetpointSelector<=7){
-		SetpointSelector = SetpointSelector +1;}
-while (SensorValue(Up)){
-wait(.01);}}
-if(SensorValue(Down)){
-	if(SetpointSelector>=2){
-		SetpointSelector = SetpointSelector -1;}
-while (SensorValue(Down)){
-wait(.01);}}
-	}
+		if(SetpointSelector<=7){
+			SetpointSelector++;}
+		while (SensorValue(Up)){
+			wait(.01);}}
+	if(SensorValue(Down)){
+		if(SetpointSelector>=2){
+			SetpointSelector++;}
+		while (SensorValue(Down)){
+			wait(.01);}}
+}
 
 
 
@@ -44,20 +44,20 @@ wait(.01);}}
 
 
 task main() {
-startTask(MotorControl);
-startTask(PositionLogic);
-slaveMotor(LeftFly,RightFly);
-while (true){
-if(SensorValue(ShootTrigger)){
-	startMotor(RightFly, 127);
-	if (abs(SensorValue(FlywheelEncoder)-lastquad)>20){
-		//Shoot Ball
-	}
-	wait(.05);
-	SensorValue(FlywheelEncoder) = lastquad;
-	}
+	startTask(MotorControl);
+	startTask(PositionLogic);
+	slaveMotor(LeftFly,RightFly);
+	while (true){
+		if(SensorValue(ShootTrigger)){
+			startMotor(RightFly, 127);
+			if (abs(SensorValue(FlywheelEncoder)-lastquad)>20){
+				//Shoot Ball
+			}
+			wait(.05);
+			SensorValue(FlywheelEncoder) = lastquad;
+		}
 
-if(SensorValue(ShootTrigger)==0){stopMotor(RightFly);}
+		if(SensorValue(ShootTrigger)==0){stopMotor(RightFly);}
 
-}
+	}
 }
