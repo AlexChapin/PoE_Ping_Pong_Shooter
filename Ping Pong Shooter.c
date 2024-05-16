@@ -12,8 +12,11 @@
 int SetpointSelector = 1;
 int TargetPose = 10;
 int lastquad = 0;
+const int QuadCountsPerSetpointStep = 7.5;
+
+
 task MotorControl(){
-TargetPose = SetpointSelector * 7.5;
+TargetPose = SetpointSelector * QuadCountsPerSetpointStep;
 if ((SensorValue(PivotEncoder) - TargetPose)>4){startMotor(Pivot,25);}
 if ((SensorValue(PivotEncoder) - TargetPose)<-4){startMotor(Pivot,-18);}
 if ((SensorValue(PivotEncoder) - TargetPose)>.5 &&(SensorValue(PivotEncoder) - TargetPose)<4){startMotor(Pivot,10);}
@@ -52,8 +55,9 @@ if(SensorValue(ShootTrigger)){
 	}
 	wait(.05);
 	SensorValue(FlywheelEncoder) = lastquad;
+	}
 
-}
 if(SensorValue(ShootTrigger)==0){stopMotor(RightFly);}
+
 }
 }
