@@ -39,7 +39,7 @@ if(SensorValue(ShootTrigger)==0){
 	stopMotor(Shoot);}
 
 if(SensorValue(Up)){
-	if(SetpointSelector<=6){
+	if(SetpointSelector<=7){
 		SetpointSelector = SetpointSelector +1;}
 while (SensorValue(Up)){
 wait(.01);}}
