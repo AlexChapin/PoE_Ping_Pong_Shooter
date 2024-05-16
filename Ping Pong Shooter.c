@@ -9,20 +9,20 @@
 int SetpointSelector = 1;
 int TargetPose = 10;
 
-
-
-task main() {
-while (true){
+task MotorControl(){
 TargetPose = SetpointSelector * 7.5;
 if ((SensorValue(PivotEncoder) - TargetPose)>4){startMotor(Pivot,25);}
 if ((SensorValue(PivotEncoder) - TargetPose)<-4){startMotor(Pivot,-18);}
 if ((SensorValue(PivotEncoder) - TargetPose)>.5 &&(SensorValue(PivotEncoder) - TargetPose)<4){startMotor(Pivot,10);}
 if ((SensorValue(PivotEncoder) - TargetPose)<-.5 &&(SensorValue(PivotEncoder) - TargetPose)>-4){startMotor(Pivot,-7);}
 if (SensorValue(PivotEncoder)- TargetPose<.5 && SensorValue(PivotEncoder) - TargetPose>-.5){stopMotor(Pivot);}
-if(SensorValue(ShootTrigger)){
-	startMotor(Shoot, 127);}
-if(SensorValue(ShootTrigger)==0){
-	stopMotor(Shoot);}
+}
+
+task main() {
+	startTask(MotorControl);
+while (true){
+
+
 
 if(SensorValue(Up)){
 	if(SetpointSelector<=7){
