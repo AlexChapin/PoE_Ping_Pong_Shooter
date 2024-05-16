@@ -14,8 +14,10 @@ int TargetPose = 10;
 task main() {
 while (true){
 TargetPose = SetpointSelector * 7.5;
-if ((SensorValue(PivotEncoder) - TargetPose)>.5){startMotor(Pivot,15);}
-if ((SensorValue(PivotEncoder) - TargetPose)<-.5){startMotor(Pivot,-20);}
+if ((SensorValue(PivotEncoder) - TargetPose)>4){startMotor(Pivot,25);}
+if ((SensorValue(PivotEncoder) - TargetPose)<-4){startMotor(Pivot,-18);}
+if ((SensorValue(PivotEncoder) - TargetPose)>.5 &&(SensorValue(PivotEncoder) - TargetPose)<4){startMotor(Pivot,10);}
+if ((SensorValue(PivotEncoder) - TargetPose)<-.5 &&(SensorValue(PivotEncoder) - TargetPose)>-4){startMotor(Pivot,-7);}
 if (SensorValue(PivotEncoder)- TargetPose<.5 && SensorValue(PivotEncoder) - TargetPose>-.5){stopMotor(Pivot);}
 if(SensorValue(ShootTrigger)){
 	startMotor(Shoot, 127);}
