@@ -3,7 +3,6 @@
 #pragma config(Sensor, dgtl3,  ShootTrigger,   sensorTouch)
 #pragma config(Sensor, dgtl4,  PivotEncoder,   sensorQuadEncoder)
 #pragma config(Sensor, dgtl6,  FlywheelEncoder, sensorQuadEncoder)
-#pragma config(Sensor, dgtl12, Indicate,       sensorLEDtoVCC)
 #pragma config(Motor,  port1,           Pivot,         tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           LeftFly,       tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           RightFly,      tmotorVex393_MC29, openLoop)
@@ -17,6 +16,7 @@ const int QuadCountsPerSetpointStep = 7.5;
 
 // Motor Driving Loop //
 task PivotControl(){
+while (true){
 	TargetPose = SetpointSelector * QuadCountsPerSetpointStep;
 	if ((SensorValue(PivotEncoder) - TargetPose)>4){
 		startMotor(Pivot,25);
@@ -34,9 +34,11 @@ task PivotControl(){
 		stopMotor(Pivot);
 		}
 }
+}
 
 // Setpoint Adjustment Logic // 
 task PositionLogic(){
+while (true){
 	if(SensorValue(Up)){
 		if(SetpointSelector<=7){
 			SetpointSelector++;
@@ -46,11 +48,12 @@ task PositionLogic(){
 			}
 	if(SensorValue(Down)){
 		if(SetpointSelector>=2){
-			SetpointSelector++;
+			SetpointSelector = SetpointSelector - 1;
 			}
 		while (SensorValue(Down)){
 			wait(.01);}
 			}
+}
 }
 
 task ShootControl(){
@@ -78,5 +81,4 @@ task main() {
 	startTask(PivotControl);
 	startTask(PositionLogic);
 	startTask(ShootControl);
-
 }
