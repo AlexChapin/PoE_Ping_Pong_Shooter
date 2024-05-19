@@ -11,12 +11,19 @@
 // Variables //
 int SetpointSelector = 1;
 int TargetPose = 10;
-float lastquad = 0;
-const float QuadCountsPerSetpointStep = 7.5;
-const int FastSpeedUp = -25
-const int FastSpeedDown = 18
-const int SlowSpeedUp = -10
-const int SlowSpeedDown = 7 
+int lastquad = 0;
+const float QuadCountsPerSetpointStep = 7.5; //Experiment To Discover 10 Degree
+const int FastSpeedUp = -25;
+const int FastSpeedDown = 18;
+const int SlowSpeedUp = -10;
+const int SlowSpeedDown = 7;
+const int MaxSetpoint = 8;
+const int MinSetpoint = 1;
+
+const float DelayTimeButtonDebounce = .01; //Seconds
+const int FlywheelShootSpeed = 127;
+const float TargetFlywheelSpeed = 20; //Degrees Per Second
+const float ShootLoopTime = .05; //Seconds
 
 // Motor Driving Loop //
 task PivotControl(){
@@ -40,35 +47,35 @@ while (true){
 }
 }
 
-// Setpoint Adjustment Logic // 
+// Setpoint Adjustment Logic //
 task PositionLogic(){
 while (true){
 	if(SensorValue(Up)){
-		if(SetpointSelector<=7){
+		if(SetpointSelector<=(MaxSetpoint-1)){
 			SetpointSelector++;
 			}
 		while (SensorValue(Up)){
-			wait(.01);}
+			wait(DelayTimeButtonDebounce);}
 			}
 	if(SensorValue(Down)){
-		if(SetpointSelector>=2){
+		if(SetpointSelector>=(MinSetpoint+2)){
 			SetpointSelector = SetpointSelector - 1;
 			}
 		while (SensorValue(Down)){
-			wait(.01);}
+			wait(DelayTimeButtonDebounce);}
 			}
 }
 }
-// Shooting Speed Control Loop // 
+// Shooting Speed Control Loop //
 task ShootControl(){
 	slaveMotor(LeftFly,RightFly);
 	while (true){
 		if(SensorValue(ShootTrigger)){
-			startMotor(RightFly, 127);
-			if (abs(SensorValue(FlywheelEncoder)-lastquad)>20){
+			startMotor(RightFly, FlywheelShootSpeed);
+			if (abs(SensorValue(FlywheelEncoder)-lastquad)>TargetFlywheelSpeed){
 				//Shoot Ball//
 			}
-			wait(.05);
+			wait(ShootLoopTime);
 			SensorValue(FlywheelEncoder) = lastquad;
 		}
 
