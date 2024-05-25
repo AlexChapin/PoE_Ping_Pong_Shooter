@@ -19,45 +19,44 @@ const int SlowSpeedUp = -15;
 const int SlowSpeedDown = 11;
 const int MaxSetpoint = 8;
 const int MinSetpoint = 1;
+const int TriggerThresholdSetpoint1Zeroing = 4;
 
 const float DelayTimeButtonDebounce = .01; //Seconds
 const int SpinShootSpeed = 127;
-//const float TargetFlywheelSpeed = 20; //Degrees Per Second
-//const float ShootLoopTime = .05; //Seconds
 
 // Motor Driving Loop //
 task PivotControl(){
 startMotor(Pivot,ZeroingSpeedDown);
 while(SensorValue(ZeroingLimit)==0){
 	wait(.01);
-}
+}//Initally Zero Encoder
 SensorValue(PivotEncoder) = 0;
 while (true){
 	TargetPose = SetpointSelector * QuadCountsPerSetpointStep - QuadCountsPerSetpointStep;
 	if ((SensorValue(PivotEncoder) - TargetPose)>=5){
 		startMotor(Pivot,FastSpeedDown);
-		}
+		} // If far away up go down fast
 	if ((SensorValue(PivotEncoder) - TargetPose)<=-5){
 		startMotor(Pivot,FastSpeedUp);
-		}
+		}// If far away down go up fast
 	if ((SensorValue(PivotEncoder) - TargetPose)>.5 && SensorValue(PivotEncoder) - TargetPose <5){
 		startMotor(Pivot,SlowSpeedDown);
-		}
+		}// If close down go up slow
 	if ((SensorValue(PivotEncoder) - TargetPose)<-.5 &&(SensorValue(PivotEncoder) - TargetPose)>-5){
 		startMotor(Pivot,SlowSpeedUp);
-		}
+		}// If close up gp down slow
 	if (SensorValue(PivotEncoder) - TargetPose<.5 && SensorValue(PivotEncoder) - TargetPose>-.5){
 		stopMotor(Pivot);
-		}
+		} //If close enough stop
 	if(SetpointSelector==1){
-		if(SensorValue(ZeroingLimit)==0 && SensorValue(PivotEncoder)<4){
-		startMotor(Pivot, 11);
-		wait(.05);
+		if(SensorValue(ZeroingLimit)==0 && SensorValue(PivotEncoder)<TriggerThresholdSetpoint1Zeroing){
+		startMotor(Pivot, SlowSpeedDown);
+		wait(.05); //Zero at Setpoint 1
 	}
 
 		if(SensorValue(ZeroingLimit) ==1){
 			SensorValue(PivotEncoder) = 0;
-		}
+		} //Constantly Zero Encoder For Accurate setpoints
 	}
 }
 }
@@ -68,17 +67,17 @@ while (true){
 	if(SensorValue(Up)){
 		if(SetpointSelector<=(MaxSetpoint-1)){
 			SetpointSelector++;
-			}
+			} 
 		while (SensorValue(Up)){
 			wait(DelayTimeButtonDebounce);}
-			}
+			} //One press = one var increase
 	if(SensorValue(Down)){
 		if(SetpointSelector>=(MinSetpoint+1)){
 			SetpointSelector = SetpointSelector - 1;
 			}
 		while (SensorValue(Down)){
 			wait(DelayTimeButtonDebounce);}
-			}
+			}//One press = one var decrease
 }
 }
 // Shooting Speed Control Loop //
@@ -86,7 +85,7 @@ task ShootControl(){
 	while(true){
 		if(SensorValue(ShootTrigger)){
 			startMotor(ShootMotor,SpinShootSpeed);
-		}
+		}//Shoot when limit is pressed
 		else if(SensorValue(ShootTrigger)==0){
 			stopMotor(ShootMotor);
 		}
@@ -103,3 +102,5 @@ task main() {
 		wait(1);
 		}
 	}
+//Initilize other tasks
+//Was going to put higher level flywheel logic here...
